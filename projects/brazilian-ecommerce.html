@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brazilian E-Commerce Data Analysis — Gopinath Arumugam</title>
+    <meta
+      name="description"
+      content="Comprehensive analysis of 100,000+ orders from the Olist Brazilian E-Commerce dataset, covering customer behaviour, seller performance, and time-series trends."
+    />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme")
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+          document.documentElement.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"))
+        } catch (e) {}
+      })()
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a href="/" class="brand">Gopinath<span>.</span></a>
+        <nav aria-label="Primary">
+          <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#projects">Projects</a></li>
+            <li><a href="/#experience">Experience</a></li>
+            <li><a href="/#skills">Skills</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="nav-right">
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark and light mode" aria-pressed="false">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="detail-hero">
+        <div class="container">
+          <a class="back-link" href="/#projects">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"></path></svg>
+            Back to projects
+          </a>
+          <span class="eyebrow">Case Study</span>
+          <h1>Brazilian E-Commerce Data Analysis</h1>
+          <div class="project-tools" style="margin-top: 1rem;">
+            <span class="tool-chip">Python</span>
+            <span class="tool-chip">Pandas</span>
+            <span class="tool-chip">NumPy</span>
+            <span class="tool-chip">Matplotlib</span>
+            <span class="tool-chip">Seaborn</span>
+            <span class="tool-chip">Jupyter Notebook</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="container">
+          <div class="detail-grid">
+            <div class="detail-main">
+              <h2>Overview</h2>
+              <p>
+                This project delivers a comprehensive analysis of the Olist Brazilian E-Commerce
+                dataset, covering more than 100,000 orders placed between 2016 and 2018. The
+                work spans data cleaning, multi-dataset merging, exploratory analysis across
+                customers, sellers, and products, and a rich suite of statistical visualisations
+                — ultimately generating actionable business insights.
+              </p>
+
+              <h2>Dataset</h2>
+              <p>
+                The dataset comprises multiple CSV files from Olist Store, including customers,
+                orders, order items, payments, reviews, products, sellers, and geolocation data
+                across Brazilian zip codes.
+              </p>
+
+              <h2>Part 1 — Data Understanding</h2>
+              <p>
+                All CSV files were loaded into Pandas DataFrames and profiled for shape, column
+                types, and summary statistics. Categorical and numerical columns were identified
+                and documented before any transformation took place.
+              </p>
+
+              <h2>Part 2 — Data Cleaning</h2>
+              <p>
+                Missing values were quantified and handled across all tables. Duplicates were
+                removed, incorrect data types were corrected, and date columns were converted to
+                datetime format. Inconsistent category names were normalised, outliers in payment
+                values were identified, and missing review comments were replaced with a
+                standardised placeholder.
+              </p>
+
+              <h2>Part 3 — Merging</h2>
+              <p>
+                Orders were merged with customers, then with payments, and products were joined
+                to order items. A master dataset combining orders, customers, payments, products,
+                and sellers was constructed and used for all downstream analysis.
+              </p>
+
+              <h2>Part 4 — Business Analysis</h2>
+              <ul>
+                <li><strong>Geography:</strong> São Paulo (SP) leads in both customer count and order volume</li>
+                <li><strong>Payment:</strong> Credit card is the dominant payment method</li>
+                <li><strong>Average order value:</strong> approximately 154.1 currency units</li>
+                <li><strong>Top category:</strong> Cama_mesa_banho (Bed, Table &amp; Bath)</li>
+                <li><strong>Peak sales:</strong> November 2017, with Monday receiving the most orders weekly</li>
+                <li><strong>Delivery:</strong> Average delivery time of approximately 12 days, with significant late-delivery incidents identified</li>
+              </ul>
+
+              <h2>Part 5 — Customer Analysis</h2>
+              <p>
+                The top 10 highest-spending customers were identified. São Paulo was confirmed as
+                the leading state by revenue. 12,489 customers placed repeat orders, indicating
+                a meaningful loyal base. The majority of customer reviews were 5-star ratings.
+              </p>
+
+              <h2>Part 6 — Seller Analysis</h2>
+              <p>
+                Top revenue-generating sellers were ranked. Fastest-delivering sellers and those
+                receiving poor reviews were identified. Product category distribution per seller
+                was examined and compared across Brazilian states.
+              </p>
+
+              <h2>Part 7 — Product Analysis</h2>
+              <p>
+                Most popular categories by volume and by revenue were ranked. Categories
+                attracting poor reviews were flagged. Shipping costs were compared by category,
+                with computers and furniture incurring the highest costs.
+              </p>
+
+              <h2>Part 8 — Time Series Analysis</h2>
+              <p>
+                Monthly sales trends from September 2016 to October 2018 were tracked, showing
+                year-over-year growth and seasonal patterns. Monthly customer growth and revenue
+                trends were plotted. Delivery delay patterns were examined over time.
+              </p>
+
+              <h2>Part 9 — Matplotlib Visualisations</h2>
+              <ul>
+                <li>Bar chart: top product categories</li>
+                <li>Line chart: monthly sales trends</li>
+                <li>Histogram: payment value distribution</li>
+                <li>Pie chart: payment methods breakdown</li>
+                <li>Scatter plot: shipping cost vs review score</li>
+                <li>Horizontal bar chart: top sellers by revenue</li>
+                <li>Boxplot: product price distribution</li>
+                <li>Subplot dashboard for consolidated business insights</li>
+              </ul>
+
+              <h2>Part 10 — Seaborn Visualisations</h2>
+              <ul>
+                <li>Countplot for payment methods</li>
+                <li>Barplot for top-selling categories</li>
+                <li>Histplot with KDE for order value distribution</li>
+                <li>Boxplot for delivery times</li>
+                <li>Heatmap for numerical feature correlations</li>
+              </ul>
+
+              <h2>Key Insights</h2>
+              <ul>
+                <li>São Paulo dominates both customer concentration and revenue — a key market for targeted campaigns</li>
+                <li>November 2017 peak sales suggest strong holiday-season demand, with year-round growth confirmed</li>
+                <li>12,489 repeat customers represent a loyal base worth retention investment</li>
+                <li>Credit cards dominate payments; instalment offerings could drive higher average order values</li>
+                <li>Late deliveries are a significant operational issue, particularly outside São Paulo</li>
+                <li>Home goods lead in volume; electronics command the highest prices and shipping costs</li>
+              </ul>
+
+              <h2>How to Run</h2>
+              <p>
+                Install dependencies with <code>pip install pandas numpy matplotlib seaborn kagglehub</code>,
+                download the dataset using kagglehub (automated in the notebook), then run all
+                cells sequentially in Jupyter Notebook.
+              </p>
+            </div>
+
+            <aside class="detail-aside">
+              <h3>Tools Used</h3>
+              <div class="aside-tools">
+                <span class="tool-chip">Python</span>
+                <span class="tool-chip">Pandas</span>
+                <span class="tool-chip">NumPy</span>
+                <span class="tool-chip">Matplotlib</span>
+                <span class="tool-chip">Seaborn</span>
+                <span class="tool-chip">Jupyter Notebook</span>
+                <span class="tool-chip">kagglehub</span>
+              </div>
+
+              <h3>Skills Demonstrated</h3>
+              <div class="aside-tools">
+                <span class="tool-chip">Data Cleaning</span>
+                <span class="tool-chip">EDA</span>
+                <span class="tool-chip">Merging &amp; Joining</span>
+                <span class="tool-chip">Time Series</span>
+                <span class="tool-chip">Statistical Analysis</span>
+                <span class="tool-chip">Data Visualisation</span>
+                <span class="tool-chip">Dashboard Creation</span>
+                <span class="tool-chip">Business Metrics</span>
+              </div>
+
+              <h3>Dataset</h3>
+              <p style="color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem;">
+                Olist Brazilian E-Commerce — 100,000+ orders (2016–2018)
+              </p>
+
+              <h3>Highlights</h3>
+              <ul style="color: var(--muted); font-size: 0.9rem; padding-left: 1.1rem; margin-top: 0.5rem;">
+                <li>10 analytical sections</li>
+                <li>8+ merged datasets</li>
+                <li>Matplotlib &amp; Seaborn dashboards</li>
+                <li>12,489 repeat customers identified</li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        &copy; <span id="year"></span> Gopinath Arumugam. All rights reserved.
+      </div>
+    </footer>
+
+    <script>document.getElementById("year").textContent = new Date().getFullYear()</script>
+    <script src="/styles/theme.js"></script>
+  </body>
+</html>

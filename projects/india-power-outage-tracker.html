@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>India Power Outage Tracker — Gopinath Arumugam</title>
+    <meta
+      name="description"
+      content="End-to-end analytics pipeline monitoring India's grid reliability — combining CEA outage reports with weather data to produce a composite risk score per state."
+    />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme")
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+          document.documentElement.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"))
+        } catch (e) {}
+      })()
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a href="/" class="brand">Gopinath<span>.</span></a>
+        <nav aria-label="Primary">
+          <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#projects">Projects</a></li>
+            <li><a href="/#experience">Experience</a></li>
+            <li><a href="/#skills">Skills</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="nav-right">
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark and light mode" aria-pressed="false">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="detail-hero">
+        <div class="container">
+          <a class="back-link" href="/#projects">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"></path></svg>
+            Back to projects
+          </a>
+          <span class="eyebrow">Case Study</span>
+          <h1>India Power Outage Pattern &amp; Grid Reliability Tracker</h1>
+          <div class="project-tools" style="margin-top: 1rem;">
+            <span class="tool-chip">Python</span>
+            <span class="tool-chip">PostgreSQL</span>
+            <span class="tool-chip">Supabase</span>
+            <span class="tool-chip">Streamlit</span>
+            <span class="tool-chip">Plotly</span>
+            <span class="tool-chip">Power BI</span>
+            <span class="tool-chip">Open-Meteo API</span>
+            <span class="tool-chip">pandas</span>
+            <span class="tool-chip">psycopg2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="container">
+          <div class="detail-grid">
+
+            <!-- ── Main content ── -->
+            <div class="detail-main">
+
+              <h2>The Problem</h2>
+              <p>
+                India's electricity distribution companies (discoms) do not publish outage data
+                publicly. Residents, businesses, and researchers have no systematic way to understand
+                which states are chronically unreliable, what conditions drive grid stress, or how
+                to plan around outages. People are effectively flying blind.
+              </p>
+              <p>
+                This project builds that visibility layer using publicly available central-level
+                data from the Central Electricity Authority (CEA), enriched with real-time weather
+                observations to produce a composite risk score for each state.
+              </p>
+
+              <h2>Architecture</h2>
+              <p>
+                The pipeline combines two data sources: CEA's Daily Maintenance Report
+                (Sub-Report 10), downloaded manually from npp.gov.in, and daily weather data
+                fetched automatically from the Open-Meteo Historical API. Both flow into a
+                PostgreSQL database hosted on Supabase, where they're joined, scored, and served
+                to the Streamlit dashboard.
+              </p>
+              <ul>
+                <li><strong>parse_report10.py</strong> — extracts unit-level outage records from raw XLS files into a clean DataFrame, including reason-text categorisation (Mechanical / Electrical / Fuel / Grid-Other / Unknown)</li>
+                <li><strong>load_report10.py</strong> — upserts the DataFrame into PostgreSQL with idempotent conflict handling so the same file can be reloaded without creating duplicates</li>
+                <li><strong>batch_load.py</strong> — runs the loader across an entire folder of files in date order, with per-file error handling and a summary report</li>
+                <li><strong>fetch_weather.py</strong> — pulls daily max temperature and rainfall for all 36 states/UTs from the Open-Meteo API and loads them into the weather fact table</li>
+                <li><strong>risk_model.py</strong> — computes the composite risk score and writes results to <code>fact_risk_scores</code></li>
+              </ul>
+
+              <h2>Database Schema</h2>
+              <p>
+                A star schema with two dimension tables and three fact tables, hosted on Supabase
+                (PostgreSQL 16). Dimensions hold stable descriptive data; facts hold time-series
+                measurements joined by integer foreign keys.
+              </p>
+              <ul>
+                <li><strong>dim_state</strong> — 36 states/UTs with region classification</li>
+                <li><strong>dim_station</strong> — 82 power stations, auto-populated from report data</li>
+                <li><strong>fact_outage_event</strong> — unit-level daily outage records (station, MW, category, reason text, timestamps)</li>
+                <li><strong>fact_weather_event</strong> — daily max temperature and rainfall per state</li>
+                <li><strong>fact_risk_scores</strong> — composite risk score per state per day with component breakdown</li>
+              </ul>
+
+              <h2>Key Finding — Chronic Outage Entries</h2>
+              <p>
+                During model development, I discovered that CEA's daily report tracks all
+                <em>currently open</em> outages — not just new ones. Units that have been offline
+                for years (some since 2004) appear in every daily report with identical MW values.
+                This "chronic outage stock" accounts for 85%+ of entries.
+              </p>
+              <p>
+                This made supervised ML targets degenerate — binary "any outage today" gave a 100%
+                positive rate; "above state median" gave 0%. Rather than hiding this, I documented
+                it as a real data-structure finding and redesigned the risk model to a rule-based
+                scoring approach, which is standard in operational risk contexts when supervised
+                learning cannot be applied. The finding is documented openly in the dashboard's
+                Methodology page.
+              </p>
+
+              <h2>Risk Scoring Model</h2>
+              <p>
+                The composite risk score combines three normalised components weighted by operational
+                significance:
+              </p>
+              <ul>
+                <li><strong>Outage Load (50%)</strong> — forced MW as a percentage of total MW under maintenance, normalised 0–1 across all state-days</li>
+                <li><strong>Heat Stress (30%)</strong> — daily max temperature, capped at 45°C and normalised — captures cooling-system failures in thermal plants and demand spikes</li>
+                <li><strong>Rain Stress (20%)</strong> — daily rainfall in mm, capped at 100 mm and normalised — captures equipment faults and transmission disruptions from heavy weather</li>
+              </ul>
+              <p>
+                States scoring above 0.66 are labelled High, 0.33–0.66 Medium, and below 0.33 Low.
+                On the latest report date, Uttar Pradesh scored 0.720 (High) with 100% forced-outage
+                load at 39.5°C, while Jharkhand scored 0.156 (Low) despite moderate forced load,
+                reflecting cooler temperatures and higher rainfall.
+              </p>
+
+              <h2>SQL Analysis</h2>
+              <p>
+                Five core queries drive the analysis, using window functions and PostgreSQL's
+                built-in <code>corr()</code> aggregate:
+              </p>
+              <ul>
+                <li>Worst-state forced-outage ranking by event count and total MW lost</li>
+                <li>Daily trend of forced MW across all states over time</li>
+                <li>Pearson correlation between max temperature and forced outage events</li>
+                <li>Hot-day vs. normal-day comparison (≥40°C vs. below) for average forced events</li>
+                <li>Root-cause breakdown: Mechanical (38%) · Grid/Other (26%) · Fuel (15%) · Electrical (6%) · Unknown (16%)</li>
+              </ul>
+
+              <h2>Streamlit Dashboard</h2>
+              <p>
+                A 4-page interactive dashboard with a live Supabase connection, built with
+                Streamlit and Plotly:
+              </p>
+              <ul>
+                <li><strong>National Overview</strong> — India choropleth map coloured by risk score, KPI cards, and all-India forced MW trend line</li>
+                <li><strong>State Drill-Down</strong> — per-state risk score trend, reason-category donut chart, and temperature/rainfall overlay timeline</li>
+                <li><strong>Risk Scoreboard</strong> — all states ranked by composite score with a colour-coded heatmap across all loaded dates</li>
+                <li><strong>Methodology</strong> — data sources, risk formula, the chronic-outage finding, and honest caveats — documenting limitations openly rather than hiding them</li>
+              </ul>
+
+              <h2>Honest Caveats</h2>
+              <p>
+                This tool covers inter-state and large-capacity thermal/nuclear units monitored by
+                CEA. Local distribution-level outages are not included as no public API exists.
+                Weather data uses each state capital as a proxy — sub-state variation is not
+                captured. Risk scores are normalised within the loaded date range, so a longer
+                history would produce more stable results.
+              </p>
+
+            </div>
+
+            <!-- ── Aside ── -->
+            <div class="detail-aside">
+              <h3>Live Links</h3>
+              <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <a
+                  href="https://gopinath-ipop.streamlit.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-primary"
+                  style="justify-content:center;"
+                >
+                  ⚡ Live Dashboard
+                </a>
+                <a
+                  href="https://github.com/Gopinath23032001/Data_Analytics/tree/India-Power-Outage-Pattern-%26-Grid-Reliability-Tracker"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-secondary"
+                  style="justify-content:center;"
+                >
+                  GitHub Repo
+                </a>
+              </div>
+
+              <h3>Tech Stack</h3>
+              <div class="aside-tools">
+                <span class="tool-chip">Python 3.12</span>
+                <span class="tool-chip">pandas</span>
+                <span class="tool-chip">psycopg2</span>
+                <span class="tool-chip">xlrd</span>
+                <span class="tool-chip">requests</span>
+                <span class="tool-chip">PostgreSQL 16</span>
+                <span class="tool-chip">Supabase</span>
+                <span class="tool-chip">Streamlit</span>
+                <span class="tool-chip">Plotly</span>
+                <span class="tool-chip">Power BI</span>
+                <span class="tool-chip">Open-Meteo API</span>
+              </div>
+
+              <h3>Data Sources</h3>
+              <div class="aside-tools">
+                <span class="tool-chip">CEA Sub-Report 10</span>
+                <span class="tool-chip">npp.gov.in</span>
+                <span class="tool-chip">Open-Meteo Historical API</span>
+              </div>
+
+              <h3>Key Metrics</h3>
+              <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:0.75rem;margin-top:0.25rem;">
+                <li style="background:var(--surface-2);border:1px solid var(--border);border-radius:0.5rem;padding:0.75rem 1rem;">
+                  <span style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--primary);">2,040</span>
+                  <span style="display:block;font-size:0.8rem;color:var(--muted);margin-top:0.1rem;">Outage events loaded</span>
+                </li>
+                <li style="background:var(--surface-2);border:1px solid var(--border);border-radius:0.5rem;padding:0.75rem 1rem;">
+                  <span style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--primary);">17</span>
+                  <span style="display:block;font-size:0.8rem;color:var(--muted);margin-top:0.1rem;">Report dates backfilled</span>
+                </li>
+                <li style="background:var(--surface-2);border:1px solid var(--border);border-radius:0.5rem;padding:0.75rem 1rem;">
+                  <span style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--primary);">82</span>
+                  <span style="display:block;font-size:0.8rem;color:var(--muted);margin-top:0.1rem;">Power stations tracked</span>
+                </li>
+                <li style="background:var(--surface-2);border:1px solid var(--border);border-radius:0.5rem;padding:0.75rem 1rem;">
+                  <span style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--primary);">15</span>
+                  <span style="display:block;font-size:0.8rem;color:var(--muted);margin-top:0.1rem;">States scored daily</span>
+                </li>
+                <li style="background:var(--surface-2);border:1px solid var(--border);border-radius:0.5rem;padding:0.75rem 1rem;">
+                  <span style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;color:var(--primary);">4</span>
+                  <span style="display:block;font-size:0.8rem;color:var(--muted);margin-top:0.1rem;">Streamlit dashboard pages</span>
+                </li>
+              </ul>
+
+              <h3>Project Type</h3>
+              <div class="aside-tools">
+                <span class="tool-chip">End-to-End Pipeline</span>
+                <span class="tool-chip">Live API Integration</span>
+                <span class="tool-chip">Risk Scoring</span>
+                <span class="tool-chip">Public Interest Data</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        &copy; <span id="year"></span> Gopinath Arumugam. All rights reserved.
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+    <script src="/styles/theme.js"></script>
+  </body>
+</html>
