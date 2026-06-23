@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banking Portfolio Analysis — Gopinath Arumugam</title>
+    <meta
+      name="description"
+      content="Case study: analysing CASA and deposit portfolios to identify client segments and cross-sell opportunities using Python, SQL, and Tableau."
+    />
+    <meta name="theme-color" content="#0a66c2" />
+
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme")
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+          document.documentElement.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"))
+        } catch (e) {}
+      })()
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a href="/" class="brand">Gopinath<span>.</span></a>
+        <nav aria-label="Primary">
+          <ul class="nav-links">
+            <li><a href="/#projects">Projects</a></li>
+            <li><a href="/#skills">Skills</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="nav-right">
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="Toggle dark and light mode"
+            aria-pressed="false"
+          >
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="detail-hero">
+        <div class="container">
+          <a href="/#projects" class="back-link">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+            Back to projects
+          </a>
+          <span class="eyebrow">Case Study</span>
+          <h1>Banking Portfolio Analysis</h1>
+          <p class="hero-tagline">
+            Turning CASA and deposit data into clear client segments and actionable cross-sell
+            opportunities for branch teams.
+          </p>
+        </div>
+      </section>
+
+      <section class="detail-body">
+        <div class="container detail-grid">
+          <div class="detail-main">
+            <h2>Overview</h2>
+            <p>
+              Drawing on hands-on banking experience, this project analysed Current Account, Savings
+              Account (CASA), and term-deposit portfolios to understand how balances were
+              distributed across customer segments and branches. The goal was to help relationship
+              managers prioritise outreach and grow the deposit book.
+            </p>
+
+            <h2>The problem</h2>
+            <p>
+              Portfolio reporting was fragmented across spreadsheets, making it hard to see which
+              client segments were growing, which were dormant, and where product bundling could
+              add value. Decisions relied on intuition rather than evidence.
+            </p>
+
+            <h2>What I did</h2>
+            <ul>
+              <li>Consolidated account-level data and cleaned it with Python and Pandas.</li>
+              <li>Wrote SQL queries to segment customers by balance, product mix, and activity.</li>
+              <li>Performed exploratory analysis to spot dormant accounts and cross-sell signals.</li>
+              <li>Built a Tableau dashboard tracking portfolio growth and segment health.</li>
+            </ul>
+
+            <h2>Outcome</h2>
+            <p>
+              The analysis produced a prioritised list of cross-sell opportunities and a repeatable
+              dashboard, giving branch teams a single, evidence-based view of portfolio performance.
+            </p>
+          </div>
+
+          <aside class="detail-aside">
+            <h3>Tools used</h3>
+            <div class="aside-tools">
+              <span class="tool-chip">Python</span>
+              <span class="tool-chip">Pandas</span>
+              <span class="tool-chip">SQL</span>
+              <span class="tool-chip">Tableau</span>
+            </div>
+
+            <h3>Focus areas</h3>
+            <div class="aside-tools">
+              <span class="tool-chip">Data cleaning</span>
+              <span class="tool-chip">Segmentation</span>
+              <span class="tool-chip">EDA</span>
+            </div>
+
+            <h3>Role</h3>
+            <p style="color: var(--muted); margin: 0">Data analysis &amp; dashboard design</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        &copy; <span id="year"></span> Gopinath Arumugam. All rights reserved.
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+    <script src="/styles/theme.js"></script>
+  </body>
+</html>
